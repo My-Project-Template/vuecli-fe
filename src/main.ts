@@ -4,7 +4,8 @@ import { plugins } from './plugins';
 import '@/assets/styles/scss/global-conf.scss';
 
 function main() {
-    return plugins.reduce((app, plugin) => app.use(plugin), createApp(App)).mount('#app');
+    const mainApp = createApp(App);
+    return plugins.reduce((app, plugin) => app.use(plugin), mainApp).mount('#app');
 }
 
 main();
