@@ -13,6 +13,8 @@ const addStyleResource = rule => {
         });
 };
 
+const VUE_STYLE_USAGES = ['vue-modules', 'vue', 'normal-modules', 'normal'];
+
 module.exports = defineConfig(() => {
     return {
         transpileDependencies: true,
@@ -23,12 +25,8 @@ module.exports = defineConfig(() => {
             },
         },
         chainWebpack(config) {
-            ['vue-modules', 'vue', 'normal-modules', 'normal'].forEach(type => {
-                addStyleResource(config.module.rule('scss').oneOf(type));
-            });
-
             // add resolve-url-loader
-            ['vue-modules', 'vue', 'normal-modules', 'normal'].forEach(rule => {
+            VUE_STYLE_USAGES.forEach(rule => {
                 config.module
                     .rule('scss')
                     .oneOf(rule)
@@ -36,6 +34,10 @@ module.exports = defineConfig(() => {
                     .loader('resolve-url-loader')
                     .before('sass-loader')
                     .end();
+            });
+
+            VUE_STYLE_USAGES.forEach(type => {
+                addStyleResource(config.module.rule('scss').oneOf(type));
             });
         },
         devServer: {
