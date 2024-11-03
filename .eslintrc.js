@@ -1,8 +1,9 @@
 module.exports = {
     root: true,
     env: {
+        browser: true,
         node: true,
-        es6: true,
+        'shared-node-browser': true,
         es2024: true,
         // This key must be true, or when using defineProps
         // without import at <script setup></script>,

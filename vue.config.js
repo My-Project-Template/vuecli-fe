@@ -25,7 +25,7 @@ module.exports = defineConfig(() => {
             },
         },
         chainWebpack(config) {
-            // add resolve-url-loader
+            // add resolve-url-loader for scss
             VUE_STYLE_USAGES.forEach(rule => {
                 config.module
                     .rule('scss')
