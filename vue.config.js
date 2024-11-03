@@ -24,6 +24,14 @@ module.exports = defineConfig(() => {
                 scss: { sourceMap: true },
             },
         },
+        devServer: {
+            port: 1024,
+            client: {
+                overlay: {
+                    warnings: false,
+                },
+            },
+        },
         chainWebpack(config) {
             // add resolve-url-loader for scss
             VUE_STYLE_USAGES.forEach(rule => {
@@ -39,9 +47,6 @@ module.exports = defineConfig(() => {
             VUE_STYLE_USAGES.forEach(type => {
                 addStyleResource(config.module.rule('scss').oneOf(type));
             });
-        },
-        devServer: {
-            port: 1024,
         },
     };
 });
