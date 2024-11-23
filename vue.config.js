@@ -8,7 +8,7 @@ const addStyleResource = rule => {
         .options({
             patterns: [
                 // global fonts, mixins and scss functions
-                path.resolve(__dirname, 'src/assets/styles/scss/_global.scss'),
+                path.resolve(__dirname, 'src/assets/styles/less/global.less'),
             ],
         });
 };
@@ -19,11 +19,6 @@ module.exports = defineConfig(() => {
     return {
         transpileDependencies: true,
         lintOnSave: 'error',
-        css: {
-            loaderOptions: {
-                scss: { sourceMap: true },
-            },
-        },
         devServer: {
             port: 1024,
             client: {
@@ -33,19 +28,8 @@ module.exports = defineConfig(() => {
             },
         },
         chainWebpack(config) {
-            // add resolve-url-loader for scss
-            VUE_STYLE_USAGES.forEach(rule => {
-                config.module
-                    .rule('scss')
-                    .oneOf(rule)
-                    .use('resolve-url-loader')
-                    .loader('resolve-url-loader')
-                    .before('sass-loader')
-                    .end();
-            });
-
             VUE_STYLE_USAGES.forEach(type => {
-                addStyleResource(config.module.rule('scss').oneOf(type));
+                addStyleResource(config.module.rule('less').oneOf(type));
             });
         },
     };
