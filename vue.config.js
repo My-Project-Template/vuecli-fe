@@ -1,13 +1,13 @@
 const { defineConfig } = require('@vue/cli-service');
 const path = require('path');
 
-/** Add global style-resource for scss file */
+/** Add global style-resource for less file */
 const addStyleResource = rule => {
     rule.use('style-resource')
         .loader('style-resources-loader')
         .options({
             patterns: [
-                // global fonts, mixins and scss functions
+                // global fonts, mixins and less functions
                 path.resolve(__dirname, 'src/assets/styles/less/global.less'),
             ],
         });
