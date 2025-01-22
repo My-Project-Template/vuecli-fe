@@ -1,29 +1,49 @@
 const { defineConfig } = require('@vue/cli-service');
 const path = require('path');
 
+const isProduction = process.env?.NODE_ENV === 'production';
+
+/** Vue style chain config items */
+const VUE_STYLE_ONE_OF = ['vue-modules', 'vue', 'normal-modules', 'normal'];
+/** Default title of the project */
+const DEFAULT_TITLE = 'Vue Project';
+
+/** Get sass loader options */
+function getSassLoaderOptions(conf = {}) {
+    const { sourceMap = !isProduction, api = 'legacy' } = conf;
+
+    let outputStyle = 'expanded';
+    if (isProduction) {
+        outputStyle = 'compressed';
+    }
+
+    const result = {
+        ...conf,
+        sourceMap,
+        api,
+        sassOptions: {
+            outputStyle,
+        },
+    };
+    return result;
+}
+
 /** Add global style-resource for scss file */
-const addStyleResource = rule => {
+function addStyleResource(rule) {
     rule.use('style-resource')
         .loader('style-resources-loader')
         .options({
             patterns: [
                 // global fonts, mixins and scss functions
-                path.resolve(__dirname, 'src/assets/styles/scss/_global.scss'),
+                path.resolve(__dirname, 'src/assets/_global.scss'),
             ],
         });
-};
-
-const VUE_STYLE_USAGES = ['vue-modules', 'vue', 'normal-modules', 'normal'];
+}
 
 module.exports = defineConfig(() => {
     return {
-        transpileDependencies: true,
+        transpileDependencies: isProduction,
         lintOnSave: 'error',
-        css: {
-            loaderOptions: {
-                scss: { sourceMap: true },
-            },
-        },
         devServer: {
             port: 1024,
             client: {
@@ -32,21 +52,48 @@ module.exports = defineConfig(() => {
                 },
             },
         },
+        css: {
+            loaderOptions: {
+                sass: getSassLoaderOptions({ api: 'modern' }),
+            },
+        },
         chainWebpack(config) {
             // add resolve-url-loader for scss
-            VUE_STYLE_USAGES.forEach(rule => {
+            VUE_STYLE_ONE_OF.forEach(rule => {
                 config.module
                     .rule('scss')
                     .oneOf(rule)
                     .use('resolve-url-loader')
                     .loader('resolve-url-loader')
                     .before('sass-loader')
-                    .end();
+                    .end()
+                    .use('sass-loader')
+                    .tap(opts =>
+                        getSassLoaderOptions({
+                            ...opts,
+                            sourceMap: true,
+                            api: 'modern',
+                        })
+                    );
             });
 
-            VUE_STYLE_USAGES.forEach(type => {
+            VUE_STYLE_ONE_OF.forEach(type => {
                 addStyleResource(config.module.rule('scss').oneOf(type));
             });
+
+            // Configure the default title of the project.
+            config
+                .plugin('html')
+                .tap(args => {
+                    const [htmlPluginDefaultConfiguration, ...rest] = args;
+                    return [
+                        {
+                            ...htmlPluginDefaultConfiguration,
+                            title: DEFAULT_TITLE,
+                        },
+                    ].concat(rest);
+                })
+                .end();
         },
     };
 });

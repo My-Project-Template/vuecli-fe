@@ -1,7 +1,8 @@
 import { createApp } from 'vue';
 import App from './App.vue';
 import { plugins } from './plugins';
-import '@/assets/styles/scss/global-conf.scss';
+import '@mdi/font/css/materialdesignicons.css';
+import 'ress/dist/ress.min.css';
 
 function main() {
     const mainApp = createApp(App);
