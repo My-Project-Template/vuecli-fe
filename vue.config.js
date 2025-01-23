@@ -2,7 +2,8 @@ const { defineConfig } = require('@vue/cli-service');
 const path = require('path');
 
 const isProduction = process.env?.NODE_ENV === 'production';
-
+/** New babel loader path */
+const newBabelLoaderPath = path.resolve(__dirname, 'node_modules/babel-loader/lib/index.js');
 /** Vue style chain config items */
 const VUE_STYLE_ONE_OF = ['vue-modules', 'vue', 'normal-modules', 'normal'];
 /** Default title of the project */
@@ -93,6 +94,22 @@ module.exports = defineConfig(() => {
                         },
                     ].concat(rest);
                 })
+                .end()
+                .module.rule('js')
+                .use('babel-loader')
+                .loader(newBabelLoaderPath)
+                .end()
+                .end()
+                .rule('ts')
+                .use('babel-loader')
+                .loader(newBabelLoaderPath)
+                .end()
+                .end()
+                .rule('tsx')
+                .use('babel-loader')
+                .loader(newBabelLoaderPath)
+                .end()
+                .end()
                 .end();
         },
     };
