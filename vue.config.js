@@ -69,13 +69,10 @@ module.exports = defineConfig(() => {
                     .before('sass-loader')
                     .end()
                     .use('sass-loader')
-                    .tap(opts =>
-                        getSassLoaderOptions({
-                            ...opts,
-                            sourceMap: true,
-                            api: 'modern',
-                        })
-                    );
+                    .tap(opts => ({
+                        ...opts,
+                        sourceMap: true,
+                    }));
             });
 
             VUE_STYLE_ONE_OF.forEach(type => {
